@@ -1,0 +1,27 @@
+name: Deploy to S3
+ 
+on:
+  push:
+    branches:
+      - main  # or whichever branch you want to trigger the deployment from
+ 
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+ 
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+ 
+    # Optional: Setup Node.js, Python, etc., depending on your build environment
+    - name: Set up Node.js (if needed)
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+ 
+    # Sync the built site with the S3 bucket
+    - name: Sync to S3
+      run: aws s3 sync ./maan/ s3://${{ secrets.AWS_S3_BUCKET }} --delete
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_ID }}
